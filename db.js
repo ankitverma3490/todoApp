@@ -1,8 +1,12 @@
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabaseAsync("tasks2.db");
+
+// create or open the database
 export const openDatabase = async () => {
   return await SQLite.openDatabaseAsync("task.db");
 };
+
+//  Initializing the database with required tables
 export const initializeDatabase = async () => {
   const db = await openDatabase();
   await db.execAsync(`
@@ -22,6 +26,7 @@ export const initializeDatabase = async () => {
     );
   `);
 };
+// Insert new group
 export const insertGroup = async ({ id, title, completed }) => {
   const db = await openDatabase();
   const result = await db.runAsync(
@@ -30,11 +35,15 @@ export const insertGroup = async ({ id, title, completed }) => {
   );
   return result.lastInsertRowId;
 };
+
+// Fetch all groups
 export const fetchGroups = async () => {
   const db = await openDatabase();
   const groups = await db.getAllAsync("SELECT * FROM groups;");
   return groups;
 };
+
+// Insert new task
 export const insertTask = async (groupId, title, description, completed) => {
   const db = await openDatabase();
   const result = await db.runAsync(
@@ -46,6 +55,8 @@ export const insertTask = async (groupId, title, description, completed) => {
   );
   return result.lastInsertRowId;
 };
+
+// Fetch all tasks by group
 export const fetchTasksByGroup = async (groupId) => {
   const db = await openDatabase();
   const tasks = await db.getAllAsync(
@@ -55,6 +66,7 @@ export const fetchTasksByGroup = async (groupId) => {
   return tasks;
 };
 
+// update task title/description
 export const updateTask = async (id, title, description) => {
   const db = await openDatabase();
   await db.runAsync(
@@ -64,10 +76,14 @@ export const updateTask = async (id, title, description) => {
     id
   );
 };
+
+//update group title
 export const updategroup = async (id, title) => {
   const db = await openDatabase();
   await db.runAsync("UPDATE groups SET title = ? WHERE id = ?;", title, id);
 };
+
+// marked/unmarked group
 export const markedgroup = async (id, completed) => {
   const db = await openDatabase();
   await db.runAsync(
@@ -76,6 +92,8 @@ export const markedgroup = async (id, completed) => {
     id
   );
 };
+
+// marked/unmarked task
 export const markedtask = async (id, completed) => {
   const db = await openDatabase();
   await db.runAsync(
@@ -84,10 +102,14 @@ export const markedtask = async (id, completed) => {
     id
   );
 };
+
+// delete task
 export const deleteTask = async (id) => {
   const db = await openDatabase();
   await db.runAsync("DELETE FROM tasks WHERE id = ?;", id);
 };
+
+//delete group
 export const deletegroup = async (id) => {
   const db = await openDatabase();
   await db.runAsync("DELETE FROM groups WHERE id = ?;", id);
